@@ -1,5 +1,6 @@
 #A LOT OF THIS CODE CAME FROM RHOSY, MISY .py 
 import mido, sounddevice
+from mido import MidiFile
 import numpy as np
 import scipy.io.wavfile as wav
 import matplotlib.pyplot as plt
@@ -76,12 +77,13 @@ class Midi:
                 tmp_array[id] = Note(key = id, generator= array[id].generator + array[id + 4].generator + array[id + 7].generator )
             chords.append(tmp_array)
         return chords 
-    def process_midi_event(self):
+    def process_midi_event(self,mesg=None):
         # These globals define the interface to sound generation.
         #global out_keys, out_osc
 
         # Block until a MIDI message is received.
-        mesg = self.controller.receive()
+        if mesg is None:
+            mesg = self.controller.receive()
         if(mesg is None):
             return True
 
@@ -226,5 +228,8 @@ output_stream = sounddevice.OutputStream(
 )
 output_stream.start()
 #synth.log_notes = True
-while synth.process_midi_event():
-    pass
+for msg in MidiFile('test.mid').play():
+    print(msg)
+    synth.process_midi_event(msg)
+#while synth.process_midi_event():
+    #pass
