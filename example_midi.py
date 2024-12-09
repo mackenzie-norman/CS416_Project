@@ -12,39 +12,29 @@ The file is saved to test.mid.
 import random
 import sys
 
-from mido import MAX_PITCHWHEEL, Message, MidiFile, MidiTrack
+from mido import MAX_PITCHWHEEL, Message, MidiFile, MidiTrack,  bpm2tempo, second2tick,MetaMessage
 
-notes = [64, 64 + 7, 64 + 12]
+notes = [64, 64 + 4, 64 + 9]
 
-outfile = MidiFile(type=1)
+outfile = MidiFile()
 
 track = MidiTrack()
+track.append(MetaMessage('set_tempo', tempo=bpm2tempo(100)))
 outfile.tracks.append(track)
 
 
 delta = 600
 ticks_per_expr = int(sys.argv[1]) if len(sys.argv) > 1 else 20
-for i in range(4):
-    noteA = random.choice(notes)
-    noteB = random.choice(notes)
-    track.append(Message('note_on', note=noteA, velocity=100, time=0))
+ 
+for i in range(12):
+    noteA = notes[i%3]
+    noteB = random.choice([n for n in notes if n != noteA])
+    track.append(Message('note_on', note=noteA, velocity=100, time=delta))
     track.append(Message('note_on', note=noteB, velocity=100, time=0))
+    #track.append(Message('note_off', note=noteA, velocity=100, time=delta))
     track.append(Message('note_off', note=noteA, velocity=100, time=delta))
-    track.append(Message('note_off', note=noteB, velocity=100, time=delta))
-    track.append(Message('program_change', program=i))
-track = MidiTrack()
-outfile.tracks.append(track)
+    track.append(Message('note_off', note=noteB, velocity=100, time=0))
+    #track.append(Message('program_change', program=i))
 
 
-delta = 600
-ticks_per_expr = int(sys.argv[1]) if len(sys.argv) > 1 else 20
-for i in range(4):
-    noteA = random.choice(notes)
-    noteB = random.choice(notes)
-    track.append(Message('note_on', note=noteA, velocity=100, time=0))
-    track.append(Message('note_on', note=noteB, velocity=100, time=0))
-    track.append(Message('note_off', note=noteA, velocity=100, time=delta))
-    track.append(Message('note_off', note=noteB, velocity=100, time=delta))
-    track.append(Message('program_change', program=i))
-
-outfile.save('test.mid')
+outfile.save('new_song.mid')

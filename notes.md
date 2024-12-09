@@ -26,3 +26,12 @@ mid.save('new_song.mid')
 https://stackoverflow.com/questions/76013580/mido-example-code-for-creating-a-midifile
 
 important to note that order matters a lot in midifiles
+
+plan for now is to generate notes at tempo, then loop. 
+can edit each note/notes and keep note on off
+
+hard parts are going to be handling multi notes (need to get sleep time right)
+
+also would like to be able to play over it, but not sure if that will be possible (the sleeping seems hard. need a better async/non blocking version)
+
+had a problem with notes being shortened, debugged the problem being since I reuse notes a note needs to be reset

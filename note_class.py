@@ -27,7 +27,11 @@ class Note:
         self.attack_time = attack_time
         #self.attack_time_remaining = self.attack_time
         self.release_time = release_time
-
+    def play(self):
+        self.playing = True
+        if self.release_time_remaining:
+            self.release_time_remaining = None    
+        
     # Accept a time linspace to generate samples in.  Return
     # that many samples of note being played, or None if
     # note is over.
@@ -45,6 +49,7 @@ class Note:
             # Do release part of ADSR envelope.
             release_time_remaining = self.release_time_remaining
             if release_time_remaining <= 0:
+                print("finish")
                 self.finish()
                 return None
             # Figure out the gain at the starting time according

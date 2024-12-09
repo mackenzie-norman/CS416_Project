@@ -8,13 +8,17 @@ from note_class import Note
 from wave_tables import Sine_Generator, Square_Generator, Saw_Generator, Sample_Generator
 # Calculate frequency for a 12-tone equal-tempered Western
 # scale given MIDI note number. Change 440 to 432 for better
-# sound </s>.
 
+
+#this is different th
+def sample_times(frame_count):
+    #different function    
+    return 
 def key_to_freq(key, base_freq = 440):
     return base_freq * 2 ** ((key - 69) / 12)
 #The idea is each can come from a different oscillator that is selected by the midi (read synth)
 
-#trying to make a midi class that has list that is collection of current notes down. 
+
 def pick_midi(default = None):
     input_ports = mido.get_input_names()
     if default is None:
@@ -72,7 +76,6 @@ class Midi:
             tmp_array = {}
             id = 0
             while  id + 9 in array:
-                print(id)
                 id += 1
                 tmp_array[id] = Note(key = id, generator= array[id].generator + array[id + 4].generator + array[id + 7].generator )
             chords.append(tmp_array)
@@ -101,7 +104,8 @@ class Midi:
             if self.log_notes:
                 print('note on', key, mesg.velocity, round(velocity, 2))
             note =self.current_wave_table[key]
-            note.playing = True  
+            #note.playing = True  
+            note.play()
             self.out_keys[key] = note
             #self.NoteClass(key, self.oscillator, attack_time=self.note_attack_time, release_time=self.note_release_time, base_freq=self.base_freq)
         
@@ -159,7 +163,7 @@ class Midi:
 
     def plot_osc(self): 
         #goal is to show a plot of our waveform
-        plt.plot(self.current_wave_table[69].samples(sample_times(880)))
+        plt.plot(self.current_wave_table[69].samples(np.linspace(0,1 , 880, dtype=np.float32)))
         plt.show()
         pass 
     def set_oscillator(self ):
@@ -172,8 +176,9 @@ class Midi:
         # Generate the samples for each key and add them
         # into the mix.
         for key in on_keys:
-            note = synth.out_keys[key]
+            note = self.out_keys[key]
             note_samples = note.samples(t)
+            #print(self.out_keys)
             if note_samples is None:
                 del_keys.add(note)
                 continue
@@ -185,51 +190,7 @@ class Midi:
         # Close the deleted keys.
         for key in del_keys:
             self.out_keys.pop(key,None)
-            
+          
         return samples
-#small helper function
-def sample_times(frame_count):
-    return np.linspace(
-        sample_clock / sample_rate,
-        (sample_clock + frame_count) / sample_rate,
-        frame_count,
-        dtype=np.float32,
-    )
 
-sample_rate = 48000
-sample_clock = 0
-blocksize = 32
-synth = Midi()
 
-def output_callback(out_data, frame_count, time_info, status):
-    # Make sure to update the *global* sample clock.
-    global sample_clock
-    global synth
-    if status:
-        print("output callback:", status)
-
-    # Start with silence and maybe work up.
-    samples = np.zeros(frame_count, dtype=np.float32)
-    t = sample_times(frame_count)
-
-    samples = synth.get_sounds(t,samples)
-   
-    
-    out_data[:] = np.reshape(samples, (frame_count, 1))
-
-    # Bump the sample clock for next cycle.
-    sample_clock += frame_count
-
-output_stream = sounddevice.OutputStream(
-    samplerate=sample_rate,
-    channels=1,
-    blocksize=blocksize,
-    callback=output_callback,
-)
-output_stream.start()
-#synth.log_notes = True
-for msg in MidiFile('test.mid').play():
-    print(msg)
-    synth.process_midi_event(msg)
-#while synth.process_midi_event():
-    #pass
