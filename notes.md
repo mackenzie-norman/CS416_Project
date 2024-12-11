@@ -38,4 +38,8 @@ had a problem with notes being shortened, debugged the problem being since I reu
 
 I got really annoyed that I couldn't see what the midi files I was making looked like so I threw together a VSCode extension to be able to see them
 
-It is really hacky at the moment but I hope to spend a little more time and get it working well enough
+It is really hacky at the moment but I hope to spend a little more time and get it working well enough 
+
+zbbing this project. Maybe if I have time over the break I will be able to return to it, but right now its not working and I feel comfortable turning in the vscode extension.
+
+If you want to hear something scary try running synth.py 
