@@ -182,9 +182,6 @@ class Midi:
             if note_samples is None:
                 del_keys.add(note)
                 continue
-            else:
-                #need to find better scaling to stop clipping
-                note_samples *= 0.25
             samples += note_samples
 
         # Close the deleted keys.

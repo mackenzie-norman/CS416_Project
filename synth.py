@@ -49,6 +49,6 @@ if play:
     while synth.process_midi_event():
         pass
 else:
-    for msg in MidiFile('new_song.mid').play():
+    for msg in MidiFile('GoodTheBadAndTheUgly.mid').play():
         print(msg)
         synth.process_midi_event(msg)

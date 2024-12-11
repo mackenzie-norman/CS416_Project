@@ -35,3 +35,7 @@ hard parts are going to be handling multi notes (need to get sleep time right)
 also would like to be able to play over it, but not sure if that will be possible (the sleeping seems hard. need a better async/non blocking version)
 
 had a problem with notes being shortened, debugged the problem being since I reuse notes a note needs to be reset
+
+I got really annoyed that I couldn't see what the midi files I was making looked like so I threw together a VSCode extension to be able to see them
+
+It is really hacky at the moment but I hope to spend a little more time and get it working well enough
